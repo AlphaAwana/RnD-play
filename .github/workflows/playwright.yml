@@ -22,7 +22,7 @@ jobs:
       run: |
         npm install playwright
         npx playwright install --with-deps chromium
-        
+
 # npx playwright install --with-deps
 
     - name: Run Playwright tests
@@ -40,11 +40,20 @@ jobs:
           name: allure-results
           path: allure-results
           retention-days: 20
+
 ## Allure report 
     - name: Generate Allure Report
       run: |
         npm install -g allure-commandline
         allure generate allure-results -o allure-report --clean
+
+## Preserve Allure history
+    - name: Preserve Allure history
+      run: |
+        if [ -d "allure-report/history" ]; then
+        cp -r allure-report/history allure-results/
+        fi
+        npx allure generate allure-results --clean -o allure-report
 
 ## Deploy step      
     - name: Deploy Allure Report to GitHub Pages
